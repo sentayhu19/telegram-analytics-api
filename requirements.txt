@@ -30,3 +30,9 @@ torchvision
 black
 ruff
 pytest
+
+pydantic
+
+# Utilities
+python-slugify
+tqdm
