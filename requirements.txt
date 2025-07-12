@@ -1,0 +1,32 @@
+# Core scraping and data handling
+telethon
+pandas
+python-dotenv
+
+# Database & ORM
+psycopg2-binary
+SQLAlchemy
+
+# Data transformation
+# dbt is split into core + adapter
+dbt-core
+dbt-postgres
+
+# API
+fastapi
+uvicorn[standard]
+
+# Orchestration
+Dagster
+
+# Computer Vision / Object Detection
+opencv-python-headless
+pillow
+# Torch is large; you may prefer installing with CUDA/cuDNN variants manually
+torch
+torchvision
+
+# Dev / Testing
+black
+ruff
+pytest
