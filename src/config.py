@@ -6,7 +6,6 @@ attributes can be overridden by real environment variables in production.
 from __future__ import annotations
 
 from pathlib import Path
-import os as _os
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
@@ -30,7 +29,6 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",
-        env_prefix="telegram_",  # Map telegram_api_id, telegram_api_hash, etc.
     )
 
 
