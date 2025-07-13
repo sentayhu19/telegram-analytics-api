@@ -1,0 +1,16 @@
+name: telegram_analytics
+version: '1.0'
+config-version: 2
+
+profile: telegram_oracle
+
+defaults:
+  model:
+    materialized: view
+
+models:
+  telegram_analytics:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

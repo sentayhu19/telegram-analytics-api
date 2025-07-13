@@ -5,6 +5,7 @@ python-dotenv
 
 # Database & ORM
 psycopg2-binary
+oracledb
 SQLAlchemy
 
 # Data transformation
