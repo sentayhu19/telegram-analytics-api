@@ -24,5 +24,5 @@ def write_json_atomic(path: Path, data: Any) -> None:
     ensure_parent(path)
     tmp = path.with_suffix(".tmp")
     with tmp.open("w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+        json.dump(data, f, ensure_ascii=False, indent=2, default=str)
     tmp.replace(path)

@@ -46,21 +46,14 @@ class ChannelScraper:
             return []
 
         messages: list[dict] = []
-        offset_id = 0
-        total = limit or float("inf")
-        pbar = tqdm(total=total, desc=f"Downloading {slug}")
-        while True:
-            hist = await self.client(GetHistoryRequest(peer=entity, limit=100, offset_id=offset_id, offset_date=None, add_offset=0))
-            if not hist.messages:
-                break
-            for msg in hist.messages:
-                messages.append(msg.to_dict())  # pyright: ignore[reportUnknownMemberType]
-            offset_id = hist.messages[-1].id  # type: ignore[attr-defined]
-            pbar.update(len(hist.messages))
-            if limit and len(messages) >= limit:
-                break
+        pbar = tqdm(total=limit or float("inf"), desc=f"Downloading {slug}")
+
+        async for msg in self.client.iter_messages(entity, limit=limit):  # type: ignore[attr-defined]
+            messages.append(msg.to_dict())  # pyright: ignore[reportUnknownMemberType]
+            pbar.update(1)
+
         pbar.close()
-        return messages[:limit] if limit else messages
+        return messages
 
 
 async def collect_channels(channels: Sequence[str], limit: int | None = None) -> None:
