@@ -2,11 +2,29 @@
 telethon
 pandas
 python-dotenv
+oracledb
+fastapi
+uvicorn
+pydantic
+requests
+aiohttp
+python-jose[cryptography]
+passlib[bcrypt]
+sqlalchemy
+alembic
+python-multipart
+httpx
+pytz
+lru-dict
+prometheus-fastapi-instrumentator
+torch
+opencv-python
+Pillow
 
 # Database & ORM
 psycopg2-binary
-oracledb
 SQLAlchemy
+ultralytics
 
 # Data transformation
 # dbt is split into core + adapter
