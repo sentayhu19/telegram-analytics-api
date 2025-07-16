@@ -1,23 +1,111 @@
 # Telegram Medical Business Analytics Platform
 
-This repository contains an end-to-end data platform for analysing Ethiopian medical-sector businesses on Telegram. It scrapes raw messages, stages them in a data lake, pushes structured data into an Oracle warehouse, and exposes transformed analytics through dbt and (soon) a FastAPI service.
+A comprehensive platform for analyzing medical product mentions in Telegram channels, featuring:
+
+- Telegram data scraping
+- Data warehousing with Oracle
+- Data transformation with dbt
+- Image analysis with YOLO
+- RESTful API with FastAPI
+- Pipeline orchestration with Dagster
 
 ---
 
 ## Features
 
-* **Telethon scraper** – Incremental, resumable scraping of specified Telegram channels / groups.
-* **Data lake** – Raw JSON messages stored partitioned by date & channel (`data/raw/...`).
-* **Oracle warehouse** – Thin-mode `oracledb` connection pool and dbt models (views & tables).
-* **dbt** – Source definitions, staging, star-schema marts, and data tests.
-* **Dagster (planned)** – Orchestration for scheduled scrape → load → transform workflows.
-* **Docker (planned)** – Reproducible local dev + production deployments.
+- **Telethon scraper**
+  - Incremental, resumable scraping of Telegram channels
+  - JSON message storage in data lake
+  - Error handling and logging
+
+- **Data Warehouse**
+  - Oracle database integration
+  - Structured data storage
+  - Connection pooling
+
+- **Data Transformation**
+  - dbt models for staging and marts
+  - Star schema implementation
+  - Business rule validations
+
+- **Image Analysis**
+  - YOLOv8 object detection
+  - Image processing pipeline
+  - Detection result storage
+
+- **API**
+  - FastAPI REST endpoints
+  - Real-time analytics
+  - Search functionality
+
+- **Pipeline Orchestration**
+  - Dagster workflow management
+  - Daily scheduled runs
+  - Monitoring and error tracking
+
+- **Docker**
+  - Containerized development environment
+  - Production deployment ready
+  - Isolated dependencies
 
 ---
 
 ## Quick Start
 
-### 1. Clone & install dependencies
+## Setup
+
+### Prerequisites
+
+1. Python 3.10+
+2. Oracle Database
+3. Docker (optional)
+
+### Installation
+
+1. Clone the repository
+2. Create and activate virtual environment:
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+```
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+### Environment Configuration
+
+1. Copy environment template:
+```bash
+cp .env.example .env
+```
+2. Edit `.env` with your credentials:
+```env
+# Oracle Database
+ORACLE_HOST=localhost
+ORACLE_PORT=1521
+ORACLE_SERVICE=freepdb1
+ORACLE_USER=SYSTEM
+ORACLE_PASSWORD=your_password
+ORACLE_DSN=localhost:1521/freepdb1
+
+# Telegram
+TELEGRAM_API_ID=your_api_id
+TELEGRAM_API_HASH=your_api_hash
+TELEGRAM_SESSION_NAME=telegram_scraper
+TELEGRAM_CHANNELS=channel1,channel2
+
+# Data Lake
+DATA_LAKE_DIR=data/raw
+
+# dbt
+DBT_PROFILES_DIR=~/.dbt
+DBT_TARGET=oracle
+
+# YOLO
+YOLO_MODEL_PATH=models/yolov8n.pt
+YOLO_CONFIDENCE_THRESHOLD=0.5
+```
 
 ```bash
 python -m venv .venv
@@ -26,7 +114,64 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 2. Configure environment variables
+### Database Setup
+
+1. Create the database schema:
+```bash
+python setup_database.py
+```
+
+2. Initialize dbt:
+```bash
+dbt init
+```
+
+### API Development
+
+1. Run the API:
+```bash
+python -m api.run_api
+```
+
+2. Access the API at:
+- Documentation: http://localhost:8000/api/docs
+- ReDoc: http://localhost:8000/api/redoc
+- Health check: http://localhost:8000/api/health
+
+### Pipeline Orchestration
+
+1. Start Dagster UI:
+```bash
+dagster dev
+```
+
+2. Access the UI at: http://localhost:3000
+
+## API Endpoints
+
+### Top Products
+```http
+GET /api/reports/top-products?limit=10
+```
+
+### Channel Activity
+```http
+GET /api/channels/{channel_name}/activity?start_date=2023-01-01&end_date=2023-12-31
+```
+
+### Message Search
+```http
+POST /api/search/messages
+Content-Type: application/json
+
+{
+    "query": "paracetamol",
+    "channel": "optional_channel",
+    "start_date": "2023-01-01T00:00:00Z",
+    "end_date": "2023-12-31T23:59:59Z",
+    "limit": 10
+}
+```
 
 Create a `.env` file in the project root:
 
@@ -79,18 +224,21 @@ dbt deps   # only if using packages
 
 ---
 
-## Repository Structure
+## Project Structure
 
 ```
-├── data/                  # Raw / processed data (ignored by Git)
-├── notebooks/             # Exploration & ad-hoc analysis
-├── src/
-│   ├── config.py          # Pydantic Settings loader
-│   ├── constants/         # Reusable env constants
-│   ├── db/                # Oracle connection helpers
-│   └── scraper/           # Telethon scraping logic
-├── dbt_project.yml        # dbt configuration
-└── requirements.txt       # Python dependencies
+.
+├── api/                 # FastAPI application for analytics
+├── dagster_pipeline/    # Dagster pipeline orchestration
+├── notebooks/           # Jupyter notebooks for development
+├── src/                # Source code
+│   ├── scraper/        # Telegram scraping logic
+│   ├── loaders/        # Data loading utilities
+│   ├── db/            # Database connections
+│   ├── image/         # Image processing and YOLO
+│   └── constants/      # Configuration and constants
+├── tests/              # Test files
+└── data/              # Data storage
 ```
 
 ---

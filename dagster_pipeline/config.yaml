@@ -1,0 +1,27 @@
+resources:
+  db:
+    config:
+      host: "{{ env.ORACLE_HOST }}"
+      port: "{{ env.ORACLE_PORT }}"
+      service_name: "{{ env.ORACLE_SERVICE }}"
+      user: "{{ env.ORACLE_USER }}"
+      password: "{{ env.ORACLE_PASSWORD }}"
+
+ops:
+  scrape_telegram_data:
+    config:
+      channels: "{{ env.TELEGRAM_CHANNELS }}"
+      api_id: "{{ env.TELEGRAM_API_ID }}"
+      api_hash: "{{ env.TELEGRAM_API_HASH }}"
+      session_name: "{{ env.TELEGRAM_SESSION_NAME }}"
+  load_raw_to_oracle:
+    config:
+      data_dir: "{{ env.DATA_LAKE_DIR }}"
+  run_dbt_transformations:
+    config:
+      profiles_dir: "{{ env.DBT_PROFILES_DIR }}"
+      target: "{{ env.DBT_TARGET }}"
+  run_yolo_enrichment:
+    config:
+      model_path: "{{ env.YOLO_MODEL_PATH }}"
+      confidence_threshold: 0.5
